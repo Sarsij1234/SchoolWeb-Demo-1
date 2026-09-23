@@ -2,18 +2,19 @@ import { useEffect, useState } from 'react'
 import { school, navLinks, erp } from '../data/siteData'
 import { Icon } from '../lib/ui'
 
-/* Resolved once, before first paint, so light-mode visitors never see a
-   flash of the dark theme. */
+/* The site is dark by default for everyone, whatever their device is set to.
+   A visitor who uses the header toggle has that choice remembered instead.
+   Resolved once before first paint, so there is no flash of the wrong theme. */
+const DEFAULT_THEME = 'dark'
+
 function initialTheme() {
   try {
     const stored = localStorage.getItem('ev-theme')
     if (stored === 'light' || stored === 'dark') return stored
   } catch {
-    /* private mode / blocked storage — fall back to the system preference */
+    /* private mode / blocked storage — just use the default */
   }
-  return typeof matchMedia !== 'undefined' && matchMedia('(prefers-color-scheme: light)').matches
-    ? 'light'
-    : 'dark'
+  return DEFAULT_THEME
 }
 
 function useTheme() {
